@@ -1,8 +1,9 @@
 package com.mocd.uaepass.service;
 
 import com.liferay.portal.kernel.model.User;
-import javax.servlet.http.HttpServletRequest;
 import com.mocd.uaepass.exception.UaePassException;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 public interface UaePassService {

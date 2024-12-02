@@ -54,13 +54,11 @@ public class UaePassAutoLogin implements AutoLogin {
             _log.info("login with user: " + userEmail);
 
 
-            String[] credentials = new String[] {
+            return new String[] {
                     String.valueOf(user.getUserId()),
                     user.getPassword(),
                     Boolean.TRUE.toString()
             };
-
-            return credentials;
 
         } catch (Exception e) {
             throw new AutoLoginException(e);

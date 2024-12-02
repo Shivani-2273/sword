@@ -1,12 +1,9 @@
 package com.mocd.uaepass.servlet;
 
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.*;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.mocd.uaepass.constants.UaePassConstants;
 import com.mocd.uaepass.service.UaePassService;
@@ -16,7 +13,6 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @Component(
         immediate = true,
@@ -46,7 +42,6 @@ public class UaePassCallbackServlet extends HttpServlet {
         _log.info("Received callback request from UAE Pass");
 
         try {
-
             uaePassService.validateRequest(request);
             String code = request.getParameter("code");
             String tokenResponse = uaePassService.getAuthorizationToken(code);

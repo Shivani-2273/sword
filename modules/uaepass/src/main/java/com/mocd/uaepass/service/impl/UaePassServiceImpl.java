@@ -6,6 +6,8 @@ import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
 import com.liferay.expando.kernel.service.ExpandoValueLocalServiceUtil;
+import com.liferay.headless.admin.list.type.dto.v1_0.ListTypeDefinition;
+import com.liferay.list.type.service.ListTypeDefinitionLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -19,6 +21,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.upgrade.v7_2_x.util.PhoneTable;
 import com.mocd.uaepass.configuration.UaePassConfiguration;
 import com.mocd.uaepass.service.UaePassService;
 import com.mocd.uaepass.constants.UaePassConstants;
@@ -113,6 +116,7 @@ public class UaePassServiceImpl implements UaePassService {
         try {
             JSONObject tokenJson = JSONFactoryUtil.createJSONObject(tokenResponse);
             JSONObject userInfo = tokenJson.getJSONObject("userInfo");
+            _log.info("Token json "+tokenJson);
             String email = tokenJson.getString("email");
 
             User user = userLocalService.fetchUserByEmailAddress(
@@ -200,7 +204,7 @@ public class UaePassServiceImpl implements UaePassService {
             ListType phoneType = ListTypeLocalServiceUtil.getListType(
                     user.getCompanyId(),
                     "personal",
-                    "com.liferay.portal.kernel.model.Contact.phone"
+                    ListTypeConstants.CONTACT_PHONE
             );
 
             Phone phone = PhoneLocalServiceUtil.createPhone(
@@ -223,8 +227,8 @@ public class UaePassServiceImpl implements UaePassService {
                                      String crmUserId, String accessToken,String userIdentifier) throws Exception {
 
         Map<String, String> customFields = new HashMap<>();
-        customFields.put("crmUserId", crmUserId);
         customFields.put("accessToken", accessToken);
+        customFields.put("crmUserId", crmUserId);
         customFields.put("fullNameAR", userInfo.getString("fullnameAR"));
         customFields.put("fullNameEN", userInfo.getString("fullnameEN"));
         customFields.put("uuid", userInfo.getString("uuid"));
