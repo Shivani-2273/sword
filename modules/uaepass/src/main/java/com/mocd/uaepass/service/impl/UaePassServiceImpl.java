@@ -6,8 +6,6 @@ import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
 import com.liferay.expando.kernel.service.ExpandoValueLocalServiceUtil;
-import com.liferay.headless.admin.list.type.dto.v1_0.ListTypeDefinition;
-import com.liferay.list.type.service.ListTypeDefinitionLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -21,7 +19,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.upgrade.v7_2_x.util.PhoneTable;
 import com.mocd.uaepass.configuration.UaePassConfiguration;
 import com.mocd.uaepass.service.UaePassService;
 import com.mocd.uaepass.constants.UaePassConstants;
@@ -263,4 +260,6 @@ public class UaePassServiceImpl implements UaePassService {
             }
         }
     }
+
+
 }
