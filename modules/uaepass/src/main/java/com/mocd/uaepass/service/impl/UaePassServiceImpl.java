@@ -23,6 +23,7 @@ import com.mocd.uaepass.configuration.UaePassConfiguration;
 import com.mocd.uaepass.service.UaePassService;
 import com.mocd.uaepass.constants.UaePassConstants;
 import com.mocd.uaepass.exception.UaePassException;
+import com.mocd.uaepass.util.CustomFieldsUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -54,8 +55,16 @@ public class UaePassServiceImpl implements UaePassService {
     @Activate
     @Modified
     protected void activate(Map<String, Object> properties) {
-        configuration = ConfigurableUtil.createConfigurable(
-                UaePassConfiguration.class, properties);
+        try{
+            _log.debug("in activate");
+            configuration = ConfigurableUtil.createConfigurable(
+                    UaePassConfiguration.class, properties);
+            CustomFieldsUtil.initializeCustomFields();
+            _log.debug("custom fields initialized");
+        }catch (Exception e) {
+            _log.error("Failed to activate uae pass service ",e);
+        }
+
     }
 
     @Override
@@ -96,6 +105,13 @@ public class UaePassServiceImpl implements UaePassService {
     public void validateRequest(HttpServletRequest request) {
         String code = request.getParameter("code");
         String state = request.getParameter("state");
+        StringBuffer fullUrl = request.getRequestURL();
+        if (request.getQueryString() != null) {
+            fullUrl.append("?").append(request.getQueryString());
+        }
+        _log.debug("callback URL: " + fullUrl.toString());
+
+        _log.debug("state param: " + state);
         String error = request.getParameter("error");
         if (!configuration.clientId().equals(state)) {
             throw new IllegalArgumentException("Invalid state parameter: " + state);
@@ -113,7 +129,7 @@ public class UaePassServiceImpl implements UaePassService {
         try {
             JSONObject tokenJson = JSONFactoryUtil.createJSONObject(tokenResponse);
             JSONObject userInfo = tokenJson.getJSONObject("userInfo");
-            _log.info("Token json "+tokenJson);
+            _log.debug("Token json "+tokenJson);
             String email = tokenJson.getString("email");
 
             User user = userLocalService.fetchUserByEmailAddress(
@@ -127,18 +143,12 @@ public class UaePassServiceImpl implements UaePassService {
                         tokenJson.getString("access_token"),
                         tokenJson.getString("userIdentifier"));
             }else {
-                _log.info("Found existing user: " + email);
-                ExpandoTable expandoTable = ExpandoTableLocalServiceUtil.getDefaultTable(
-                        user.getCompanyId(), User.class.getName());
-                ExpandoValueLocalServiceUtil.addValue(
-                        user.getCompanyId(),
-                        User.class.getName(),
-                        expandoTable.getName(),
-                        "accessToken",
-                        user.getUserId(),
-                        tokenJson.getString("access_token")
-                );
-                _log.info("Updated access token for user: " + email);
+                _log.debug("Found existing user: " + email);
+                setUserCustomFields(user, userInfo,
+                        tokenJson.getString("crmUserId"),
+                        tokenJson.getString("access_token"),
+                        tokenJson.getString("userIdentifier"));
+                _log.debug("Updated custom fields for user: " + email);
 
             }
             return user;
@@ -236,6 +246,7 @@ public class UaePassServiceImpl implements UaePassService {
         customFields.put("nationalityAR", userInfo.getString("nationalityAR"));
         customFields.put("firstNameAR", userInfo.getString("firstnameAR"));
         customFields.put("userIdentifier", userIdentifier);
+        customFields.put("mobileNumber", userInfo.getString("mobile"));
 
         ExpandoTable expandoTable = ExpandoTableLocalServiceUtil.getDefaultTable(
                 user.getCompanyId(), User.class.getName());

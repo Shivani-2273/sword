@@ -1,0 +1,4 @@
+Bundle-Name: mocd-rating-service
+Bundle-SymbolicName: com.liferay.mocd.rating.service
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration

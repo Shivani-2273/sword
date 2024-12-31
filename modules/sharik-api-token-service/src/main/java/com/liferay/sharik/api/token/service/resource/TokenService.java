@@ -1,16 +1,19 @@
-package com.liferay.gov.api.token.service.resource;
-import com.liferay.gov.api.token.service.config.TokenConfiguration;
-import com.liferay.gov.api.token.service.dto.TokenResponseDTO;
+package com.liferay.sharik.api.token.service.resource;
+
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.sharik.api.token.service.config.TokenConfiguration;
+import com.liferay.sharik.api.token.service.dto.TokenResponseDTO;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import org.osgi.service.component.annotations.Modified;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,11 +23,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-
 @Component(
-        configurationPid = "com.liferay.gov.api.token.service.config.TokenConfiguration",
+        configurationPid = "com.liferay.sharik.api.token.service.config.TokenConfiguration",
         immediate = true,
         property = {
                 "osgi.jaxrs.resource=true"
@@ -61,7 +64,6 @@ public class TokenService {
         }
 
     }
-
     private String[] generateToken() throws Exception {
         String clientId = _tokenConfiguration.clientId();
         String clientSecret = _tokenConfiguration.clientSecret();
@@ -76,11 +78,11 @@ public class TokenService {
         conn.setDoOutput(true);
 
         String requestBody = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s",
-                URLEncoder.encode(clientId, "UTF-8"),
-                URLEncoder.encode(clientSecret, "UTF-8"));
+                URLEncoder.encode(clientId, StandardCharsets.UTF_8),
+                URLEncoder.encode(clientSecret, StandardCharsets.UTF_8));
 
         try (OutputStream os = conn.getOutputStream()) {
-            byte[] input = requestBody.getBytes("utf-8");
+            byte[] input = requestBody.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
 
@@ -90,7 +92,7 @@ public class TokenService {
 
         StringBuilder response = new StringBuilder();
         try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
             String responseLine;
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());

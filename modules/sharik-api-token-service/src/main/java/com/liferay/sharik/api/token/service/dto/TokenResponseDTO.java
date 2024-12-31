@@ -1,4 +1,4 @@
-package com.liferay.gov.api.token.service.dto;
+package com.liferay.sharik.api.token.service.dto;
 
 public class TokenResponseDTO {
     private String token;

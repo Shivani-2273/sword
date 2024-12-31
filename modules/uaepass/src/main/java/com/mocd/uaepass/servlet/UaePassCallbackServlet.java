@@ -32,14 +32,14 @@ public class UaePassCallbackServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        _log.info("Initializing UAE Pass Callback Servlet");
+        _log.debug("Initializing UAE Pass Callback Servlet");
         super.init();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        _log.info("Received callback request from UAE Pass");
+        _log.debug("Received callback request from UAE Pass");
 
         try {
             uaePassService.validateRequest(request);
@@ -53,7 +53,7 @@ public class UaePassCallbackServlet extends HttpServlet {
 
             User user= uaePassService.authenticateUser(tokenResponse);
             session.setAttribute(UaePassConstants.Config.SESSION_EMAIL_KEY, user.getEmailAddress());
-            _log.info("User authenticated successfully: " + user.getEmailAddress());
+            _log.debug("User authenticated successfully: " + user.getEmailAddress());
             response.sendRedirect("/");
 
 

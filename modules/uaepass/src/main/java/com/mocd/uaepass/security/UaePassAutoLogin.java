@@ -51,7 +51,7 @@ public class UaePassAutoLogin implements AutoLogin {
             long companyId = portal.getCompanyId(request);
             User user = userLocalService.fetchUserByEmailAddress(
                     companyId, userEmail);
-            _log.info("login with user: " + userEmail);
+            _log.debug("login with user: " + userEmail);
 
 
             return new String[] {

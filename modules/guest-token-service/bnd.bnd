@@ -1,4 +1,3 @@
 Bundle-Name: guest-token-service
 Bundle-SymbolicName: com.liferay.guest.token
 Bundle-Version: 1.0.0
-Liferay-Configuration-Path: /configuration

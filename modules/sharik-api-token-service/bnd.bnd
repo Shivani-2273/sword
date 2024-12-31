@@ -1,0 +1,5 @@
+Bundle-Name: sharik-api-token-service
+Bundle-SymbolicName: com.liferay.sharik.api.token.service
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
+-metatype: *
